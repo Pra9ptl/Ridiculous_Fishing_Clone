@@ -54,7 +54,7 @@ public class GameLogic extends SurfaceView implements Runnable {
         this.ggg = new GameBackground(this.getContext(),0, 0, R.drawable.rrr);
         this.ggg2 = new GameBackground(this.getContext(),0, 0, R.drawable.rrr);
         this.bgonly = new GameBackground(this.getContext(),0, 0, R.drawable.bgonly);
-        this.outofwater = new GameBackground(this.getContext(),0, 0, R.drawable.outofwater);
+        this.outofwater = new GameBackground(this.getContext(),0, 0, R.drawable.aaabbb);
     }
     @Override
     public void run() {
@@ -94,6 +94,7 @@ public class GameLogic extends SurfaceView implements Runnable {
             Log.d("outofwater", outofwater.getyPosition() + "");
 
             if ((fishingstring >= 500)) {
+
                     currtime = (int) System.currentTimeMillis();
                     if((currtime - time) > newTime )
                     {
@@ -106,6 +107,10 @@ public class GameLogic extends SurfaceView implements Runnable {
                         if(spacetop <=500)
                         {
                         spacetop += 10;}
+                        else{
+                            bgMovingUp = false;
+                        bgMovingDown = false;
+                        }
 //                        time = (int) System.currentTimeMillis();
                     }
 //
