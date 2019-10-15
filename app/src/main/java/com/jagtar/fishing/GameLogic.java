@@ -10,6 +10,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class GameLogic extends SurfaceView implements Runnable {
     private Thread gameThread = null;
@@ -25,6 +27,9 @@ public class GameLogic extends SurfaceView implements Runnable {
 
     GameBackground movingbg, bgonly, outofwater, pin;
 
+    Fish_Sprite fish, octo, s_horse, target;
+    List<Fish_Sprite> target_fishes;
+
     public GameLogic(Context context, int screenW, int screenH) {
         super(context);
         this.holder = this.getHolder();
@@ -37,6 +42,12 @@ public class GameLogic extends SurfaceView implements Runnable {
         this.bgonly = new GameBackground(this.getContext(), 0, 0, R.drawable.bgonly);
         this.outofwater = new GameBackground(this.getContext(), 0, 0, R.drawable.boatbackground);
         this.pin = new GameBackground(this.getContext(), 470, 680, R.drawable.pin32);
+
+        this.fish = new Fish_Sprite(this.getContext(), 0, 0, R.drawable.fish);
+        this.octo = new Fish_Sprite(this.getContext(), 70, 70, R.drawable.octopus);
+        this.s_horse = new Fish_Sprite(this.getContext(), 140, 140, R.drawable.seahorse);
+
+        this.target_fishes = new ArrayList<Fish_Sprite>();
     }
 
     @Override
@@ -60,6 +71,9 @@ public class GameLogic extends SurfaceView implements Runnable {
     int time = 0;
     int currtime = 0;
     int ccc = 0;
+    boolean fish_moving_left = true;
+    boolean octo_moving_left = false;
+    boolean hrs_moving_left = true;
 
     public void steps() {
         /*if fishing string is finished, move the background in opposite direction*/
@@ -135,6 +149,60 @@ public class GameLogic extends SurfaceView implements Runnable {
             pin.setyPosition(pin.getyPosition() - 8);
         }
         /*********END FISHING PIN MOVEMENT********/
+
+        /*********FISH MOVEMENT********/
+
+        if(fish.getxPosition() > screenWidth-200) {
+            //fish.setxPosition(fish.getxPosition() + 20);
+            fish_moving_left = true;
+        }
+        else if(fish.getxPosition() < 0){
+            fish_moving_left = false;
+        }
+
+        if(fish_moving_left == true){
+            fish.setxPosition(fish.getxPosition() - 10);
+        }else{
+            fish.setxPosition(fish.getxPosition() + 10);
+        }
+
+        /*********END FISH MOVEMENT********/
+
+        /*********OCTOPUS MOVEMENT********/
+
+        if(octo.getxPosition() > screenWidth-200) {
+            //fish.setxPosition(fish.getxPosition() + 20);
+            octo_moving_left = true;
+        }
+        else if(octo.getxPosition() < 0){
+            octo_moving_left = false;
+        }
+
+        if(octo_moving_left == true){
+            octo.setxPosition(fish.getxPosition() - 10);
+        }else{
+            octo.setxPosition(fish.getxPosition() + 10);
+        }
+
+        /*********OCTOPUS MOVEMENT********/
+
+        /*********SEA HORSE MOVEMENT********/
+
+        if(s_horse.getxPosition() > screenWidth-200) {
+            //fish.setxPosition(fish.getxPosition() + 20);
+            hrs_moving_left = true;
+        }
+        else if(s_horse.getxPosition() < 0){
+            hrs_moving_left = false;
+        }
+
+        if(hrs_moving_left == true){
+            s_horse.setxPosition(s_horse.getxPosition() - 10);
+        }else{
+            s_horse.setxPosition(s_horse.getxPosition() + 10);
+        }
+
+        /*********SEA HORSE MOVEMENT********/
     }
 
     public void drawsteps() {
@@ -163,10 +231,36 @@ public class GameLogic extends SurfaceView implements Runnable {
             //boat background
             Rect waterout = new Rect(0, outofwater.getyPosition(), screenWidth, outofwater.getyPosition() + 900);
             canvas.drawBitmap(outofwater.getImage(), null, waterout, null);
+
+            //Draw target sprites
+            int rx = rX_Pos_Gen();
+            int ry = rY_Pos_Gen();
+
+            System.out.println("RX = " + rx);
+            System.out.println("RY = " + ry);
+
+
+
+            canvas.drawBitmap(fish.getImage(), fish.getxPosition(),fish.getyPosition(), null);
+            canvas.drawBitmap(octo.getImage(), octo.getxPosition(), octo.getyPosition(), null);
+            canvas.drawBitmap(s_horse.getImage(), s_horse.getxPosition(), s_horse.getyPosition(), null);
+
             //drawing pin
             canvas.drawBitmap(pin.getImage(), pin.getxPosition(), pin.getyPosition(), null);
             holder.unlockCanvasAndPost(canvas);
         }
+    }
+
+    public int rX_Pos_Gen(){
+        Random r_num = new Random();
+        int pos = r_num.nextInt(screenWidth-1);
+        return pos;
+    }
+
+    public int rY_Pos_Gen(){
+        Random r_num = new Random();
+        int pos = r_num.nextInt(screenHeight-1);
+        return pos;
     }
 
     public void controlFPS() {
