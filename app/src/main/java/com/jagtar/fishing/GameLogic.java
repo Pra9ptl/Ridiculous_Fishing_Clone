@@ -50,10 +50,11 @@ public class GameLogic extends SurfaceView implements Runnable {
 
     boolean bgMovingDown = false;
     boolean bgMovingUp = false;
-    int spacetop = 900;
+    boolean drawbgDown = false;
+    boolean drawbgUp = false;
     int newTime = 10;
-    int fishingstring = 500;
-    int timetofish = 500;
+    int fishingstring = 2000;
+    int timetofish = 2000;
     boolean pindown = false;
     boolean pinup = false;
     int time = 0;
@@ -62,9 +63,10 @@ public class GameLogic extends SurfaceView implements Runnable {
 
     public void steps() {
         /*if fishing string is finished, move the background in opposite direction*/
-        if (fishingstring <= 0 && (movingbg.getyPosition() + screenHeight) >= screenHeight && bgMovingUp) {
+        if (fishingstring <= 0 && /*(movingbg.getyPosition() + screenHeight) >= screenHeight &&*/ bgMovingUp) {
             bgMovingUp = false;
             bgMovingDown = true;
+            drawbgDown = true;
             outofwater.setyPosition(-900);
             time = (int) System.currentTimeMillis();
         }
@@ -76,44 +78,42 @@ public class GameLogic extends SurfaceView implements Runnable {
             if (fishingstring <= timetofish)
                 movingbg.setyPosition((movingbg.getyPosition() + 10));
             //Grabbing back the fishing string
-                fishingstring += 10;
-            Log.d("outofwater", outofwater.getyPosition() + "");
+            fishingstring += 10;
+            Log.d("stringfish", fishingstring + "");
 
             /*IF TOP IS NEAR THEN MOVE BOATBACKGROUND BACK AT TIS PLACE*/
-            if ((fishingstring >= timetofish)) {
-                currtime = (int) System.currentTimeMillis();
-                if ((currtime - time) > newTime) {
-                    time = currtime;
-                    if ((outofwater.getyPosition() + 900) <= 900) {
-                        outofwater.setyPosition(outofwater.getyPosition() + 10);
-                    }
-                    if (spacetop <= 900) {
-                        spacetop += 10;
-                    } else {
-                        bgMovingUp = false;
-                        bgMovingDown = false;
-                        pinup = true;
-                    }
+            if ((fishingstring >= (timetofish - 900))) {
+                if ((outofwater.getyPosition() + 900) <= 900) {
+                    outofwater.setyPosition(outofwater.getyPosition() + 10);
                 }
-            }
-            /****************************************************************/
-
-            if (movingbg.getyPosition() > screenHeight) {
-                movingbg.setyPosition(0);
-                ccc = 1;
+                if (outofwater.getyPosition() >= 0) {
+                    bgMovingUp = false;
+                    bgMovingDown = false;
+                    pinup = true;
+                }
+                /****************************************************************/
+                if (movingbg.getyPosition() > screenHeight) {
+                    movingbg.setyPosition(0);
+                    ccc = 1;
+                }
             }
         }
         if (bgMovingUp == true) {
-            //covering the space at top with moving background
-            if (spacetop != 0) spacetop -= 10;
             //Throwing fishing string
             fishingstring -= 10;
+            Log.d("stringfish", fishingstring+ "");
+
             //moving the background
             movingbg.setyPosition((movingbg.getyPosition() - 10));
             //moving boatbackground up
             if ((outofwater.getyPosition() + 900) >= 0) {
-                outofwater.setyPosition(outofwater.getyPosition() - 20);
+                outofwater.setyPosition(outofwater.getyPosition() - 10);
             }
+            if((outofwater.getyPosition() + 900) <= 0) {
+                Log.d("calc", "decrease this much: " + (timetofish - fishingstring)+ "");
+                Log.d("calc", "boat photo position" + (outofwater.getyPosition() + 900)+ "");
+            }
+
             //resetting background when it reaches top
             if ((movingbg.getyPosition() + screenHeight) < 0) {
                 movingbg.setyPosition(0);
@@ -145,23 +145,24 @@ public class GameLogic extends SurfaceView implements Runnable {
             //flat background
             Rect bgg = new Rect(0, 0, screenWidth, screenHeight);
             canvas.drawBitmap(bgonly.getImage(), null, bgg, null);
-            //boat background
-            Rect waterout = new Rect(0, outofwater.getyPosition(), screenWidth, outofwater.getyPosition() + 900);
-            canvas.drawBitmap(outofwater.getImage(), null, waterout, null);
+
 
 
             //moving background
-            Rect rr = new Rect(0, spacetop + movingbg.getyPosition(), screenWidth, screenHeight + movingbg.getyPosition());
+            Rect rr = new Rect(0,movingbg.getyPosition(), screenWidth, screenHeight + movingbg.getyPosition());
             canvas.drawBitmap(movingbg.getImage(), null, rr, null);
 
-            if ((movingbg.getyPosition() > 0) && bgMovingDown) {
-                Rect spacecover = new Rect(0, (movingbg.getyPosition() - (screenHeight + spacetop)), screenWidth, (screenHeight + movingbg.getyPosition()) - screenHeight);
+            if ((movingbg.getyPosition() > 0) && drawbgDown) {
+                Rect spacecover = new Rect(0, (movingbg.getyPosition() - (screenHeight)), screenWidth, (screenHeight + movingbg.getyPosition()) - screenHeight);
                 canvas.drawBitmap(movingbg.getImage(), null, spacecover, null);
             }
-            if (((movingbg.getyPosition() + screenHeight) < screenHeight) && bgMovingUp) {
+            if (((movingbg.getyPosition() + screenHeight) < screenHeight) && drawbgUp) {
                 Rect spacecover2 = new Rect(0, (movingbg.getyPosition() + (screenHeight)), screenWidth, (screenHeight + movingbg.getyPosition()) + screenHeight);
                 canvas.drawBitmap(movingbg.getImage(), null, spacecover2, null);
             }
+            //boat background
+            Rect waterout = new Rect(0, outofwater.getyPosition(), screenWidth, outofwater.getyPosition() + 900);
+            canvas.drawBitmap(outofwater.getImage(), null, waterout, null);
             //drawing pin
             canvas.drawBitmap(pin.getImage(), pin.getxPosition(), pin.getyPosition(), null);
             holder.unlockCanvasAndPost(canvas);
@@ -184,10 +185,9 @@ public class GameLogic extends SurfaceView implements Runnable {
         if (userAction == MotionEvent.ACTION_DOWN) {
             MOUSETAP_X = event.getX();
             MOUSETAP_Y = event.getY();
-            spacetop = 900;
             newTime = 10;
-            fishingstring = 500;
-            timetofish = 500;
+            fishingstring = 2000;
+            timetofish = 2000;
             pindown = false;
             pinup = false;
             time = 0;
@@ -195,6 +195,7 @@ public class GameLogic extends SurfaceView implements Runnable {
             ccc = 0;
             //moving bg on tap
             bgMovingUp = true;
+            drawbgUp = true;
             //moving pin
             pindown = true;
         } else if (userAction == MotionEvent.ACTION_UP) {
