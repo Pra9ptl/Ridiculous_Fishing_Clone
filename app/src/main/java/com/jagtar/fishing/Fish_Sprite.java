@@ -8,12 +8,22 @@ import android.graphics.Rect;
 public class Fish_Sprite {
     private int xPosition;
     private int yPosition;
-
     Bitmap image;
     Rect hitbox;
 
     double xn = 0;
     double yn = 0;
+
+    //property for moving right and left
+    boolean moving_left = true;
+
+    public boolean isMoving_left() {
+        return moving_left;
+    }
+
+    public void setMoving_left(boolean moving_left) {
+        this.moving_left = moving_left;
+    }
 
     public Fish_Sprite(Context context, int x, int y, int imageName) {
         this.xPosition = x;

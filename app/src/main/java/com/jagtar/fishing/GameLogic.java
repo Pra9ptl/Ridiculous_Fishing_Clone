@@ -27,7 +27,7 @@ public class GameLogic extends SurfaceView implements Runnable {
 
     GameBackground movingbg, bgonly, outofwater, pin;
 
-    Fish_Sprite fish, octo, s_horse, target;
+    //list of targets in game
     List<Fish_Sprite> target_fishes;
 
     public GameLogic(Context context, int screenW, int screenH) {
@@ -43,10 +43,6 @@ public class GameLogic extends SurfaceView implements Runnable {
         this.outofwater = new GameBackground(this.getContext(), 0, 0, R.drawable.boatbackground);
         this.pin = new GameBackground(this.getContext(), 470, 680, R.drawable.pin32);
 
-        this.fish = new Fish_Sprite(this.getContext(), 0, 0, R.drawable.fish);
-        this.octo = new Fish_Sprite(this.getContext(), 70, 70, R.drawable.octopus);
-        this.s_horse = new Fish_Sprite(this.getContext(), 140, 140, R.drawable.seahorse);
-
         this.target_fishes = new ArrayList<Fish_Sprite>();
     }
 
@@ -61,6 +57,8 @@ public class GameLogic extends SurfaceView implements Runnable {
 
     boolean bgMovingDown = false;
     boolean bgMovingUp = false;
+    boolean targetMovingDown = false;
+    boolean targetMovingUp = false;
     boolean drawbgDown = false;
     boolean drawbgUp = false;
     int newTime = 10;
@@ -74,12 +72,25 @@ public class GameLogic extends SurfaceView implements Runnable {
     boolean fish_moving_left = true;
     boolean octo_moving_left = false;
     boolean hrs_moving_left = true;
+    int total_Target_Count = 0;
+    boolean itsTime = false;
 
     public void steps() {
+
+        //movement of the targets in the game
+        if(itsTime){
+            for(int i = 0; i<target_fishes.size(); i++) {
+                //method is decalred below takes object of Fish_Sprite
+                move_target_animals(target_fishes.get(i));
+            }
+        }
+
         /*if fishing string is finished, move the background in opposite direction*/
         if (fishingstring <= 0 && /*(movingbg.getyPosition() + screenHeight) >= screenHeight &&*/ bgMovingUp) {
             bgMovingUp = false;
             bgMovingDown = true;
+            targetMovingDown = true;
+            targetMovingUp = false;
             drawbgDown = true;
             outofwater.setyPosition(-900);
             time = (int) System.currentTimeMillis();
@@ -103,6 +114,8 @@ public class GameLogic extends SurfaceView implements Runnable {
                 if (outofwater.getyPosition() >= 0) {
                     bgMovingUp = false;
                     bgMovingDown = false;
+                    targetMovingDown = false;
+                    targetMovingUp = false;
                     pinup = true;
                 }
                 /****************************************************************/
@@ -126,6 +139,7 @@ public class GameLogic extends SurfaceView implements Runnable {
             if((outofwater.getyPosition() + 900) <= 0) {
                 Log.d("calc", "decrease this much: " + (timetofish - fishingstring)+ "");
                 Log.d("calc", "boat photo position" + (outofwater.getyPosition() + 900)+ "");
+                itsTime = true;
             }
 
             //resetting background when it reaches top
@@ -150,59 +164,30 @@ public class GameLogic extends SurfaceView implements Runnable {
         }
         /*********END FISHING PIN MOVEMENT********/
 
-        /*********FISH MOVEMENT********/
 
-        if(fish.getxPosition() > screenWidth-200) {
-            //fish.setxPosition(fish.getxPosition() + 20);
-            fish_moving_left = true;
-        }
-        else if(fish.getxPosition() < 0){
-            fish_moving_left = false;
-        }
+    }
+    public void move_target_animals(Fish_Sprite fs){
 
-        if(fish_moving_left == true){
-            fish.setxPosition(fish.getxPosition() - 10);
-        }else{
-            fish.setxPosition(fish.getxPosition() + 10);
-        }
+            if(fs.getxPosition() > (screenWidth-fs.getImage().getWidth())) {
+                //fish.setxPosition(fish.getxPosition() + 20);
+                fs.setMoving_left(false);
+            }
+            else if(fs.getxPosition() < 0){
+                fs.setMoving_left(true);
+            }
 
-        /*********END FISH MOVEMENT********/
+            if(fs.isMoving_left() == true){
+                fs.setxPosition(fs.getxPosition() + 10);
+            }else{
+                fs.setxPosition(fs.getxPosition() - 10);
+            }
 
-        /*********OCTOPUS MOVEMENT********/
-
-        if(octo.getxPosition() > screenWidth-200) {
-            //fish.setxPosition(fish.getxPosition() + 20);
-            octo_moving_left = true;
-        }
-        else if(octo.getxPosition() < 0){
-            octo_moving_left = false;
-        }
-
-        if(octo_moving_left == true){
-            octo.setxPosition(fish.getxPosition() - 10);
-        }else{
-            octo.setxPosition(fish.getxPosition() + 10);
-        }
-
-        /*********OCTOPUS MOVEMENT********/
-
-        /*********SEA HORSE MOVEMENT********/
-
-        if(s_horse.getxPosition() > screenWidth-200) {
-            //fish.setxPosition(fish.getxPosition() + 20);
-            hrs_moving_left = true;
-        }
-        else if(s_horse.getxPosition() < 0){
-            hrs_moving_left = false;
-        }
-
-        if(hrs_moving_left == true){
-            s_horse.setxPosition(s_horse.getxPosition() - 10);
-        }else{
-            s_horse.setxPosition(s_horse.getxPosition() + 10);
-        }
-
-        /*********SEA HORSE MOVEMENT********/
+            if(targetMovingUp == true){
+                fs.setyPosition(fs.getyPosition() - 10);
+            }
+            if(targetMovingDown == true){
+                fs.setyPosition(fs.getyPosition() + 10);
+            }
     }
 
     public void drawsteps() {
@@ -213,8 +198,6 @@ public class GameLogic extends SurfaceView implements Runnable {
             //flat background
             Rect bgg = new Rect(0, 0, screenWidth, screenHeight);
             canvas.drawBitmap(bgonly.getImage(), null, bgg, null);
-
-
 
             //moving background
             Rect rr = new Rect(0,movingbg.getyPosition(), screenWidth, screenHeight + movingbg.getyPosition());
@@ -228,23 +211,40 @@ public class GameLogic extends SurfaceView implements Runnable {
                 Rect spacecover2 = new Rect(0, (movingbg.getyPosition() + (screenHeight)), screenWidth, (screenHeight + movingbg.getyPosition()) + screenHeight);
                 canvas.drawBitmap(movingbg.getImage(), null, spacecover2, null);
             }
+            for (int i = 0; i < target_fishes.size(); i++) {
+                canvas.drawBitmap(target_fishes.get(i).getImage(), target_fishes.get(i).getxPosition(), target_fishes.get(i).getyPosition(), null);
+            }
             //boat background
             Rect waterout = new Rect(0, outofwater.getyPosition(), screenWidth, outofwater.getyPosition() + 900);
             canvas.drawBitmap(outofwater.getImage(), null, waterout, null);
 
             //Draw target sprites
-            int rx = rX_Pos_Gen();
-            int ry = rY_Pos_Gen();
+            if(itsTime == true) {
+                if (total_Target_Count < 10) {
+                    int rx = rX_Pos_Gen();
+                    int ry = screenHeight + 75;
+                    Fish_Sprite target = null;
+                    Random r = new Random();
+                    int sprite_Index = r.nextInt(3);
 
-            System.out.println("RX = " + rx);
-            System.out.println("RY = " + ry);
+                    if (sprite_Index == 0) {
+                        target = new Fish_Sprite(this.getContext(), rx, ry, R.drawable.fish);
+                    }
 
+                    if (sprite_Index == 1) {
+                        target = new Fish_Sprite(this.getContext(), rx, ry, R.drawable.octopus);
+                    }
 
+                    if (sprite_Index == 2) {
+                        target = new Fish_Sprite(this.getContext(), rx, ry, R.drawable.seahorse);
+                    }
+                    if (target != null) {
+                        target_fishes.add(target);
+                    }
 
-            canvas.drawBitmap(fish.getImage(), fish.getxPosition(),fish.getyPosition(), null);
-            canvas.drawBitmap(octo.getImage(), octo.getxPosition(), octo.getyPosition(), null);
-            canvas.drawBitmap(s_horse.getImage(), s_horse.getxPosition(), s_horse.getyPosition(), null);
-
+                    total_Target_Count++;
+                }
+            }
             //drawing pin
             canvas.drawBitmap(pin.getImage(), pin.getxPosition(), pin.getyPosition(), null);
             holder.unlockCanvasAndPost(canvas);
@@ -253,13 +253,13 @@ public class GameLogic extends SurfaceView implements Runnable {
 
     public int rX_Pos_Gen(){
         Random r_num = new Random();
-        int pos = r_num.nextInt(screenWidth-1);
+        int pos = r_num.nextInt(screenWidth-32);
         return pos;
     }
 
     public int rY_Pos_Gen(){
         Random r_num = new Random();
-        int pos = r_num.nextInt(screenHeight-1);
+        int pos = r_num.nextInt(screenHeight-32);
         return pos;
     }
 
@@ -289,6 +289,7 @@ public class GameLogic extends SurfaceView implements Runnable {
             ccc = 0;
             //moving bg on tap
             bgMovingUp = true;
+            targetMovingUp = true;
             drawbgUp = true;
             //moving pin
             pindown = true;
