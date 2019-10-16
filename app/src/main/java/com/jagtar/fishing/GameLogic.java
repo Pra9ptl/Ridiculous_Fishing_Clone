@@ -98,7 +98,7 @@ public class GameLogic extends SurfaceView implements Runnable {
         //background moving down
         if (bgMovingDown == true) {
             if (fishingstring <= timetofish)
-                movingbg.setyPosition((movingbg.getyPosition() + 10));
+                movingbg.setyPosition((movingbg.getyPosition() + 20));
             //Grabbing back the fishing string
             fishingstring += 10;
             Log.d("stringfish", fishingstring + "");
