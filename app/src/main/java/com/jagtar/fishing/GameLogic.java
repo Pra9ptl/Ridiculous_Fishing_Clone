@@ -21,6 +21,7 @@ public class GameLogic extends SurfaceView implements Runnable {
     private SurfaceHolder holder;
     private int screenWidth;
     private int screenHeight;
+    private static int initalPinXpos;
 
     double MOUSETAP_X = 100;
     double MOUSETAP_Y = 700;
@@ -42,6 +43,7 @@ public class GameLogic extends SurfaceView implements Runnable {
         this.bgonly = new GameBackground(this.getContext(), 0, 0, R.drawable.bgonly);
         this.outofwater = new GameBackground(this.getContext(), 0, 0, R.drawable.boatbackground);
         this.pin = new GameBackground(this.getContext(), 470, 680, R.drawable.pin32);
+        initalPinXpos = this.pin.getxPosition();
 
         this.target_fishes = new ArrayList<Fish_Sprite>();
     }
@@ -101,7 +103,7 @@ public class GameLogic extends SurfaceView implements Runnable {
                 movingbg.setyPosition((movingbg.getyPosition() + 20));
             //Grabbing back the fishing string
             fishingstring += 10;
-            Log.d("stringfish", fishingstring + "");
+
 
             /*IF TOP IS NEAR THEN MOVE BOATBACKGROUND BACK AT TIS PLACE*/
             if ((fishingstring >= (timetofish - 900))) {
@@ -114,10 +116,12 @@ public class GameLogic extends SurfaceView implements Runnable {
                     targetMovingDown = false;
                     targetMovingUp = false;
                     pinup = true;
+                    this.pin.setxPosition(initalPinXpos);
                 }
                 /****************************************************************/
                 if (movingbg.getyPosition() > screenHeight) {
                     movingbg.setyPosition(0);
+
                     ccc = 1;
                 }
             }
@@ -302,6 +306,9 @@ public class GameLogic extends SurfaceView implements Runnable {
             //moving pin
             pindown = true;
         } else if (userAction == MotionEvent.ACTION_UP) {
+        } else if (userAction == MotionEvent.ACTION_MOVE){
+            int tapX = (int) event.getX();
+            pin.setxPosition(tapX);
         }
         return true;
     }
