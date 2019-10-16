@@ -69,9 +69,6 @@ public class GameLogic extends SurfaceView implements Runnable {
     int time = 0;
     int currtime = 0;
     int ccc = 0;
-    boolean fish_moving_left = true;
-    boolean octo_moving_left = false;
-    boolean hrs_moving_left = true;
     int total_Target_Count = 0;
     boolean itsTime = false;
 
@@ -109,7 +106,7 @@ public class GameLogic extends SurfaceView implements Runnable {
             /*IF TOP IS NEAR THEN MOVE BOATBACKGROUND BACK AT TIS PLACE*/
             if ((fishingstring >= (timetofish - 900))) {
                 if ((outofwater.getyPosition() + 900) <= 900) {
-                    outofwater.setyPosition(outofwater.getyPosition() + 10);
+                    outofwater.setyPosition(outofwater.getyPosition() + 20);
                 }
                 if (outofwater.getyPosition() >= 0) {
                     bgMovingUp = false;
@@ -131,10 +128,10 @@ public class GameLogic extends SurfaceView implements Runnable {
             Log.d("stringfish", fishingstring+ "");
 
             //moving the background
-            movingbg.setyPosition((movingbg.getyPosition() - 10));
+            movingbg.setyPosition((movingbg.getyPosition() - 20));
             //moving boatbackground up
             if ((outofwater.getyPosition() + 900) >= 0) {
-                outofwater.setyPosition(outofwater.getyPosition() - 10);
+                outofwater.setyPosition(outofwater.getyPosition() - 20);
             }
             if((outofwater.getyPosition() + 900) <= 0) {
                 Log.d("calc", "decrease this much: " + (timetofish - fishingstring)+ "");
@@ -183,10 +180,10 @@ public class GameLogic extends SurfaceView implements Runnable {
             }
 
             if(targetMovingUp == true){
-                fs.setyPosition(fs.getyPosition() - 10);
+                fs.setyPosition(fs.getyPosition() - 20);
             }
             if(targetMovingDown == true){
-                fs.setyPosition(fs.getyPosition() + 10);
+                fs.setyPosition(fs.getyPosition() + 20);
             }
     }
 
@@ -231,7 +228,7 @@ public class GameLogic extends SurfaceView implements Runnable {
 
 
                         int rx = rX_Pos_Gen();
-                        int ry = screenHeight / 5;
+                        int ry = screenHeight - 20;
                         Fish_Sprite target = null;
                         Random r = new Random();
                         int sprite_Index = r.nextInt(3);
