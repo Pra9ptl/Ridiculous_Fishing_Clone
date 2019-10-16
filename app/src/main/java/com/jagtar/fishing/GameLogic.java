@@ -190,6 +190,9 @@ public class GameLogic extends SurfaceView implements Runnable {
             }
     }
 
+    long currentTime = 0;
+    long previousTime = 0;
+
     public void drawsteps() {
         if (holder.getSurface().isValid()) {
             canvas = holder.lockCanvas();
@@ -218,32 +221,40 @@ public class GameLogic extends SurfaceView implements Runnable {
             Rect waterout = new Rect(0, outofwater.getyPosition(), screenWidth, outofwater.getyPosition() + 900);
             canvas.drawBitmap(outofwater.getImage(), null, waterout, null);
 
-            //Draw target sprites
-            if(itsTime == true) {
-                if (total_Target_Count < 10) {
-                    int rx = rX_Pos_Gen();
-                    int ry = screenHeight + 75;
-                    Fish_Sprite target = null;
-                    Random r = new Random();
-                    int sprite_Index = r.nextInt(3);
+            currentTime = System.currentTimeMillis();
+            if ((currentTime - previousTime) > 500) {
+                System.out.println("tapout done");
 
-                    if (sprite_Index == 0) {
-                        target = new Fish_Sprite(this.getContext(), rx, ry, R.drawable.fish);
-                    }
+                //Draw target sprites
+                if (itsTime == true) {
+                    if (total_Target_Count < 20) {
 
-                    if (sprite_Index == 1) {
-                        target = new Fish_Sprite(this.getContext(), rx, ry, R.drawable.octopus);
-                    }
 
-                    if (sprite_Index == 2) {
-                        target = new Fish_Sprite(this.getContext(), rx, ry, R.drawable.seahorse);
-                    }
-                    if (target != null) {
-                        target_fishes.add(target);
-                    }
+                        int rx = rX_Pos_Gen();
+                        int ry = screenHeight / 5;
+                        Fish_Sprite target = null;
+                        Random r = new Random();
+                        int sprite_Index = r.nextInt(3);
 
-                    total_Target_Count++;
+                        if (sprite_Index == 0) {
+                            target = new Fish_Sprite(this.getContext(), rx, ry, R.drawable.fish);
+                        }
+
+                        if (sprite_Index == 1) {
+                            target = new Fish_Sprite(this.getContext(), rx, ry, R.drawable.octopus);
+                        }
+
+                        if (sprite_Index == 2) {
+                            target = new Fish_Sprite(this.getContext(), rx, ry, R.drawable.seahorse);
+                        }
+                        if (target != null) {
+                            target_fishes.add(target);
+                        }
+
+                        total_Target_Count++;
+                    }
                 }
+                previousTime = currentTime;
             }
             //drawing pin
             canvas.drawBitmap(pin.getImage(), pin.getxPosition(), pin.getyPosition(), null);
