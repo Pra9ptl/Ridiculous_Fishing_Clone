@@ -2,6 +2,7 @@ package com.jagtar.fishing;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
@@ -73,6 +74,7 @@ public class GameLogic extends SurfaceView implements Runnable {
     int ccc = 0;
     int total_Target_Count = 0;
     boolean itsTime = false;
+    Rect target_hitbox;
 
     public void steps() {
 
@@ -189,6 +191,9 @@ public class GameLogic extends SurfaceView implements Runnable {
             if(targetMovingDown == true){
                 fs.setyPosition(fs.getyPosition() + 20);
             }
+
+            // moving hitbox of all fishes
+            fs.updateHitbox();
     }
 
     long currentTime = 0;
@@ -215,8 +220,14 @@ public class GameLogic extends SurfaceView implements Runnable {
                 Rect spacecover2 = new Rect(0, (movingbg.getyPosition() + (screenHeight)), screenWidth, (screenHeight + movingbg.getyPosition()) + screenHeight);
                 canvas.drawBitmap(movingbg.getImage(), null, spacecover2, null);
             }
+
+            Paint p = new Paint();
             for (int i = 0; i < target_fishes.size(); i++) {
                 canvas.drawBitmap(target_fishes.get(i).getImage(), target_fishes.get(i).getxPosition(), target_fishes.get(i).getyPosition(), null);
+                // Drawing the hitbox arround the target fishes
+                p.setColor(Color.RED);
+                p.setStyle(Paint.Style.STROKE);
+                canvas.drawRect(target_fishes.get(i).getHitbox(), p);
             }
             //boat background
             Rect waterout = new Rect(0, outofwater.getyPosition(), screenWidth, outofwater.getyPosition() + 900);
@@ -229,8 +240,6 @@ public class GameLogic extends SurfaceView implements Runnable {
                 //Draw target sprites
                 if (itsTime == true) {
                     if (total_Target_Count < 20) {
-
-
                         int rx = rX_Pos_Gen();
                         int ry = screenHeight - 20;
                         Fish_Sprite target = null;
@@ -249,6 +258,10 @@ public class GameLogic extends SurfaceView implements Runnable {
                             target = new Fish_Sprite(this.getContext(), rx, ry, R.drawable.seahorse);
                         }
                         if (target != null) {
+
+                            //Generating hitboxes for all targets
+                            Rect target_hitbox = new Rect(target.getxPosition(), target.getxPosition(), target.getImage().getWidth(), target.getImage().getWidth());
+                            target.setHitbox(target_hitbox);
                             target_fishes.add(target);
                         }
 
@@ -266,12 +279,6 @@ public class GameLogic extends SurfaceView implements Runnable {
     public int rX_Pos_Gen(){
         Random r_num = new Random();
         int pos = r_num.nextInt(screenWidth-32);
-        return pos;
-    }
-
-    public int rY_Pos_Gen(){
-        Random r_num = new Random();
-        int pos = r_num.nextInt(screenHeight-32);
         return pos;
     }
 
