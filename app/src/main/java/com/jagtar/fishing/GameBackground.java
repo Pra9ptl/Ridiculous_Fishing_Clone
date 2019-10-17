@@ -3,6 +3,7 @@ package com.jagtar.fishing;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 
 public class GameBackground {
 
@@ -11,7 +12,7 @@ public class GameBackground {
         private int imageWidth;
         private int imageHeight;
         Bitmap bgimage;
-//        Rect hitbox;
+        Rect hitbox;
 
         double xn = 0;
         double yn = 0;
@@ -21,13 +22,6 @@ public class GameBackground {
             this.yPosition = y;
 
             this.bgimage = BitmapFactory.decodeResource(context.getResources(), imageName);
-            //            this.hitbox = new Rect(
-//                    this.xPosition,
-//                    this.yPosition,
-//                    this.xPosition + this.bgimage.getWidth(),
-//                    this.yPosition + this.bgimage.getHeight()
-//            );
-
         }
 
 
@@ -67,20 +61,20 @@ public class GameBackground {
             this.yn = yn;
         }
 
-//        public Rect getHitbox() {
-//            return hitbox;
-//        }
-//
-//        public void setHitbox(Rect hitbox) {
-//            this.hitbox = hitbox;
-//        }
+        public Rect getHitbox() {
+            return hitbox;
+        }
 
-//        public void updateHitbox() {
-//            this.hitbox.left = this.xPosition;
-//            this.hitbox.top = this.yPosition;
-//            this.hitbox.right = this.xPosition + this.image.getWidth();
-//            this.hitbox.bottom = this.yPosition + this.image.getHeight();
-//        }
+        public void setHitbox(Rect hitbox) {
+            this.hitbox = hitbox;
+        }
+
+        public void updateHitbox() {
+            this.hitbox.left = this.xPosition;
+            this.hitbox.top = this.yPosition;
+            this.hitbox.right = this.xPosition + this.bgimage.getWidth();
+            this.hitbox.bottom = this.yPosition + this.bgimage.getHeight();
+        }
         public int getxPosition()
         {
             return xPosition;

@@ -161,9 +161,11 @@ public class GameLogic extends SurfaceView implements Runnable {
         }
         if (pindown) {
             pin.setyPosition(pin.getyPosition() + 3);
+            pin.updateHitbox();
         }
         if (pinup) {
             pin.setyPosition(pin.getyPosition() - 8);
+            pin.updateHitbox();
         }
         /*********END FISHING PIN MOVEMENT********/
 
@@ -260,7 +262,7 @@ public class GameLogic extends SurfaceView implements Runnable {
                         if (target != null) {
 
                             //Generating hitboxes for all targets
-                            Rect target_hitbox = new Rect(target.getxPosition(), target.getxPosition(), target.getImage().getWidth(), target.getImage().getWidth());
+                            Rect target_hitbox = new Rect(target.getxPosition(), target.getxPosition(), target.getImage().getWidth(), target.getImage().getHeight());
                             target.setHitbox(target_hitbox);
                             target_fishes.add(target);
                         }
@@ -272,6 +274,11 @@ public class GameLogic extends SurfaceView implements Runnable {
             }
             //drawing pin
             canvas.drawBitmap(pin.getImage(), pin.getxPosition(), pin.getyPosition(), null);
+            Rect r = new Rect(pin.getImageWidth(), pin.getImageHeight(), pin.getxPosition(),pin.getyPosition());
+            pin.setHitbox(r);
+            p.setColor(Color.RED);
+            p.setStyle(Paint.Style.STROKE);
+            canvas.drawRect(pin.getHitbox(), p);
             holder.unlockCanvasAndPost(canvas);
         }
     }
@@ -313,6 +320,7 @@ public class GameLogic extends SurfaceView implements Runnable {
             //moving pin
             pindown = true;
         } else if (userAction == MotionEvent.ACTION_UP) {
+
         } else if (userAction == MotionEvent.ACTION_MOVE){
             int tapX = (int) event.getX();
             pin.setxPosition(tapX);
