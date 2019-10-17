@@ -274,7 +274,7 @@ public class GameLogic extends SurfaceView implements Runnable {
             }
             //drawing pin
             canvas.drawBitmap(pin.getImage(), pin.getxPosition(), pin.getyPosition(), null);
-            Rect r = new Rect(pin.getImageWidth(), pin.getImageHeight(), pin.getxPosition(),pin.getyPosition());
+            Rect r = new Rect(pin.getxPosition(),pin.getyPosition(), pin.getxPosition() + pin.getImageWidth(), pin.getyPosition() + pin.getImageHeight());
             pin.setHitbox(r);
             p.setColor(Color.RED);
             p.setStyle(Paint.Style.STROKE);
