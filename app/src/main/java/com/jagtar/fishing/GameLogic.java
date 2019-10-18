@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -31,6 +32,8 @@ public class GameLogic extends SurfaceView implements Runnable {
 
     //list of targets in game
     List<Fish_Sprite> target_fishes;
+    //List of catched Fishes
+    List<Fish_Sprite> catched_fishes;
 
     public GameLogic(Context context, int screenW, int screenH) {
         super(context);
@@ -47,6 +50,7 @@ public class GameLogic extends SurfaceView implements Runnable {
         initalPinXpos = this.pin.getxPosition();
 
         this.target_fishes = new ArrayList<Fish_Sprite>();
+        this.catched_fishes = new ArrayList<Fish_Sprite>();
     }
 
     @Override
@@ -64,6 +68,7 @@ public class GameLogic extends SurfaceView implements Runnable {
     boolean targetMovingUp = false;
     boolean drawbgDown = false;
     boolean drawbgUp = false;
+    boolean usertapped = false;
     int newTime = 10;
     int fishingstring = 2000;
     int timetofish = 2000;
@@ -83,6 +88,7 @@ public class GameLogic extends SurfaceView implements Runnable {
             for(int i = 0; i<target_fishes.size(); i++) {
                 //method is decalred below takes object of Fish_Sprite
                 move_target_animals(target_fishes.get(i));
+                chatchTheFish(target_fishes.get(i));
             }
         }
 
@@ -118,6 +124,7 @@ public class GameLogic extends SurfaceView implements Runnable {
                     targetMovingDown = false;
                     targetMovingUp = false;
                     pinup = true;
+                    usertapped = false;
                     this.pin.setxPosition(initalPinXpos);
                 }
                 /****************************************************************/
@@ -169,6 +176,15 @@ public class GameLogic extends SurfaceView implements Runnable {
         }
         /*********END FISHING PIN MOVEMENT********/
 
+        /**************CATCHED FISH MOVEMENT*************/
+        for(int i= 0; i<catched_fishes.size();i++)
+        {
+            catched_fishes.get(i).setxPosition(pin.getxPosition());
+            catched_fishes.get(i).setyPosition(pin.getyPosition() + 80);
+            catched_fishes.get(i).updateHitbox();
+        }
+        /**************END CATCHED FISH MOVEMENT*************/
+
 
     }
     public void move_target_animals(Fish_Sprite fs){
@@ -181,12 +197,14 @@ public class GameLogic extends SurfaceView implements Runnable {
                 fs.setMoving_left(true);
             }
 
+            //Fish movement along X axis
             if(fs.isMoving_left() == true){
                 fs.setxPosition(fs.getxPosition() + 10);
             }else{
                 fs.setxPosition(fs.getxPosition() - 10);
             }
 
+            //Fish movement along Y axis
             if(targetMovingUp == true){
                 fs.setyPosition(fs.getyPosition() - 20);
             }
@@ -196,6 +214,18 @@ public class GameLogic extends SurfaceView implements Runnable {
 
             // moving hitbox of all fishes
             fs.updateHitbox();
+    }
+
+    /*method to check the collision between hook and fish and then
+      removing fish from target and adding to catched*/
+    public void chatchTheFish(Fish_Sprite whichfish){
+        if(pin.getHitbox().intersect(whichfish.getHitbox()))
+        {
+            catched_fishes.add(whichfish);
+            target_fishes.remove(whichfish);
+        }
+        Log.d("catched", catched_fishes.size() + "");
+
     }
 
     long currentTime = 0;
@@ -279,6 +309,16 @@ public class GameLogic extends SurfaceView implements Runnable {
             p.setColor(Color.RED);
             p.setStyle(Paint.Style.STROKE);
             canvas.drawRect(pin.getHitbox(), p);
+
+            //drawing catched fishes
+            for(int i= 0; i< catched_fishes.size();i++) {
+                canvas.drawBitmap(catched_fishes.get(i).getImage(), catched_fishes.get(i).getxPosition(), catched_fishes.get(i).getyPosition(), null);
+                // Drawing the hitbox arround the target fishes
+                p.setColor(Color.RED);
+                p.setStyle(Paint.Style.STROKE);
+                canvas.drawRect(catched_fishes.get(i).getHitbox(), p);
+            }
+
             holder.unlockCanvasAndPost(canvas);
         }
     }
@@ -305,20 +345,26 @@ public class GameLogic extends SurfaceView implements Runnable {
         if (userAction == MotionEvent.ACTION_DOWN) {
             MOUSETAP_X = event.getX();
             MOUSETAP_Y = event.getY();
-            newTime = 10;
-            fishingstring = 2000;
-            timetofish = 2000;
-            pindown = false;
-            pinup = false;
-            time = 0;
-            currtime = 0;
-            ccc = 0;
+
             //moving bg on tap
-            bgMovingUp = true;
-            targetMovingUp = true;
-            drawbgUp = true;
-            //moving pin
-            pindown = true;
+            if(usertapped == false){
+                bgMovingUp = true;
+                newTime = 10;
+                fishingstring = 2000;
+                timetofish = 2000;
+                pindown = false;
+                pinup = false;
+                time = 0;
+                currtime = 0;
+                ccc = 0;
+                targetMovingUp = true;
+                drawbgUp = true;
+                usertapped = true;
+                //moving pin
+                pindown = true;
+            }
+
+
         } else if (userAction == MotionEvent.ACTION_UP) {
 
         } else if (userAction == MotionEvent.ACTION_MOVE){
