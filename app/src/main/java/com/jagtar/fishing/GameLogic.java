@@ -94,7 +94,8 @@ public class GameLogic extends SurfaceView implements Runnable {
         }
 
         /*if fishing string is finished, move the background in opposite direction*/
-        if (fishingstring <= 0 && /*(movingbg.getyPosition() + screenHeight) >= screenHeight &&*/ bgMovingUp) {
+        //this condition only works if hook don't collide with fish while going down
+        if (fishingstring <= 0 && bgMovingUp) {
             bgMovingUp = false;
             bgMovingDown = true;
             targetMovingDown = true;
@@ -117,13 +118,14 @@ public class GameLogic extends SurfaceView implements Runnable {
 
 
             /*IF TOP IS NEAR THEN MOVE BOATBACKGROUND BACK AT TIS PLACE*/
-            if ((fishingstring >= (stringleft))) {
+            if ((fishingstring >= (stringleft))) {  //string left = 1540
                 if ((outofwater.getyPosition() + 900) <= 900) {
                     outofwater.setyPosition(outofwater.getyPosition() + 20);
                 }
             }
-            if(fishingstring >= timetofish)
+            if(fishingstring >= timetofish) //timetofish = 1020
             {
+                Log.d("timetofish", timetofish + "");
                 bgMovingUp = false;
                 bgMovingDown = false;
                 targetMovingDown = false;
@@ -228,10 +230,22 @@ public class GameLogic extends SurfaceView implements Runnable {
     public void chatchTheFish(Fish_Sprite whichfish){
         if(pin.getHitbox().intersect(whichfish.getHitbox()))
         {
-//            if(bgMovingUp)
-//            {
-//                fishingstring = 0;
-//            }
+            if(bgMovingUp) // if colliding with fish while going down
+            {
+                //manipulating the time to fish and stringleft accordingly
+                timetofish = timetofish - fishingstring;
+                stringleft = (stringleft - fishingstring) - 10;
+                Log.d("timetofish", timetofish + "");
+                Log.d("timetofish", "string left " + (stringleft)+ "");
+                bgMovingUp = false;
+                bgMovingDown = true;
+                targetMovingDown = true;
+                targetMovingUp = false;
+                drawbgDown = true;
+                fishingstring = 0;
+                outofwater.setyPosition(-900);
+                time = (int) System.currentTimeMillis();
+            }
             catched_fishes.add(whichfish);
             target_fishes.remove(whichfish);
         }
