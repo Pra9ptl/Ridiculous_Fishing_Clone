@@ -70,14 +70,13 @@ public class GameLogic extends SurfaceView implements Runnable {
     boolean drawbgDown = false;
     boolean drawbgUp = false;
     boolean usertapped = false;
-    int newTime = 10;
-    int fishingstring = 2000;
-    int timetofish = 2000;
-    int stringleft = 0;
+    double fishingstring = 10.0;
+    double timetofish = 10.0;
+    double stringleft = 0.0;
     boolean pindown = false;
     boolean pinup = false;
-    int time = 0;
-    int currtime = 0;
+    double oldTime = System.currentTimeMillis();
+    double newTime = 0.0;
     int ccc = 0;
     int total_Target_Count = 0;
     boolean itsTime = false;
@@ -102,9 +101,9 @@ public class GameLogic extends SurfaceView implements Runnable {
             targetMovingDown = true;
             targetMovingUp = false;
             drawbgDown = true;
-            fishingstring = 0;
+            fishingstring = 0.0;
             outofwater.setyPosition(-900);
-            time = (int) System.currentTimeMillis();
+            oldTime = System.currentTimeMillis();
         }
         /************************************/
 
@@ -112,7 +111,14 @@ public class GameLogic extends SurfaceView implements Runnable {
         //background moving down
         if (bgMovingDown == true) {
             if (fishingstring <= timetofish) {
-                fishingstring += 10;
+                newTime = System.currentTimeMillis();
+                if((newTime - oldTime) >= 200.0)
+                {
+                    fishingstring += 0.2;
+                    Log.d("fishingtime", + (fishingstring) *100.0 / 100.0 + "");
+                    oldTime = newTime;
+                }
+//                fishingstring += 10;
                 movingbg.setyPosition((movingbg.getyPosition() + 20));
                 //Grabbing back the fishing string
             }
@@ -120,12 +126,13 @@ public class GameLogic extends SurfaceView implements Runnable {
 
             /*IF TOP IS NEAR THEN MOVE BOATBACKGROUND BACK AT TIS PLACE*/
             if ((fishingstring >= (stringleft))) {
+                Log.d("timetofish", "fishingstring:" + fishingstring + "stringleft: " + stringleft);
                 if ((outofwater.getyPosition() + 900) <= 900) {
                     outofwater.setyPosition(outofwater.getyPosition() + 20);
                 }
             }
             if (fishingstring >= timetofish) {
-                Log.d("timetofish", timetofish + "");
+
                 bgMovingUp = false;
                 bgMovingDown = false;
                 targetMovingDown = false;
@@ -142,15 +149,20 @@ public class GameLogic extends SurfaceView implements Runnable {
 
         if (bgMovingUp == true) {
             //Throwing fishing string
-            fishingstring -= 10;
-            Log.d("stringfish", fishingstring + "");
+            newTime = System.currentTimeMillis();
+            if((newTime - oldTime) >= 200.0)
+            {
+                fishingstring -= 0.2;
+                Log.d("fishingtime", + (fishingstring) *100.0 / 100.0 + "");
+                oldTime = newTime;
+            }
 
             //moving the background
             movingbg.setyPosition((movingbg.getyPosition() - 20));
             //moving boatbackground up
             if ((outofwater.getyPosition() + 900) >= 0) {
                 outofwater.setyPosition(outofwater.getyPosition() - 20);
-                Log.d("calc", "decrease this much: " + (fishingstring) + "");
+                Log.d("timetofish", "value of fishingstring" + (fishingstring) + "");
                 stringleft = fishingstring;
                 Log.d("stleft", "decrease this much: " + (stringleft) + "");
             }
@@ -173,11 +185,11 @@ public class GameLogic extends SurfaceView implements Runnable {
             pinup = false;
         }
         if (pindown) {
-            pin.setyPosition(pin.getyPosition() + 3);
+            pin.setyPosition(pin.getyPosition() + 10);
             pin.updateHitbox();
         }
         if (pinup) {
-            pin.setyPosition(pin.getyPosition() - 8);
+            pin.setyPosition(pin.getyPosition() - 10);
             pin.updateHitbox();
         }
         /*********END FISHING PIN MOVEMENT********/
@@ -229,7 +241,7 @@ public class GameLogic extends SurfaceView implements Runnable {
             {
                 //manipulating the time to fish and stringleft accordingly
                 timetofish = timetofish - fishingstring;
-                stringleft = (stringleft - fishingstring) - 10;
+                stringleft = (stringleft - fishingstring);
                 Log.d("timetofish", timetofish + "");
                 Log.d("timetofish", "string left " + (stringleft) + "");
                 bgMovingUp = false;
@@ -237,9 +249,9 @@ public class GameLogic extends SurfaceView implements Runnable {
                 targetMovingDown = true;
                 targetMovingUp = false;
                 drawbgDown = true;
-                fishingstring = 0;
+                fishingstring = 0.0;
                 outofwater.setyPosition(-900);
-                time = (int) System.currentTimeMillis();
+//                time = (int) System.currentTimeMillis();
             }
             catched_fishes.add(whichfish);
             target_fishes.remove(whichfish);
@@ -324,8 +336,10 @@ public class GameLogic extends SurfaceView implements Runnable {
             }
             //drawing pin
             canvas.drawBitmap(pin.getImage(), pin.getxPosition(), pin.getyPosition(), null);
-            Rect r = new Rect(pin.getxPosition(), pin.getyPosition(), pin.getxPosition() + pin.getImageWidth(), pin.getyPosition() + pin.getImageHeight());
-            pin.setHitbox(r);
+//            Rect r = new Rect(pin.getxPosition(), pin.getyPosition(), pin.getxPosition() + pin.getImageWidth(), pin.getyPosition() + pin.getImageHeight());
+//            pin.setHitbox(r);
+//            pin.getHitbox();
+            pin.setHitbox(pin.getHitbox());
             p.setColor(Color.RED);
             p.setStyle(Paint.Style.STROKE);
             canvas.drawRect(pin.getHitbox(), p);
@@ -369,14 +383,11 @@ public class GameLogic extends SurfaceView implements Runnable {
             //moving bg on tap
             if (usertapped == false) {
                 bgMovingUp = true;
-                newTime = 10;
-                fishingstring = 2000;
-                timetofish = 2000;
+                fishingstring = 10.0;
+                timetofish = 10.0;
                 pindown = false;
+                stringleft = 0.0;
                 pinup = false;
-                time = 0;
-                currtime = 0;
-                ccc = 0;
                 targetMovingUp = true;
                 drawbgUp = true;
                 usertapped = true;
@@ -392,6 +403,7 @@ public class GameLogic extends SurfaceView implements Runnable {
         } else if (userAction == MotionEvent.ACTION_MOVE) {
             int tapX = (int) event.getX();
             pin.setxPosition(tapX);
+            pin.updateHitbox();
         }
         return true;
     }

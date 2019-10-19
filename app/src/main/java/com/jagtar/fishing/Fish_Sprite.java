@@ -32,10 +32,10 @@ public class Fish_Sprite {
         this.image = BitmapFactory.decodeResource(context.getResources(), imageName);
 
         this.hitbox = new Rect(
-                this.xPosition,
-                this.yPosition,
-                this.xPosition + this.image.getWidth(),
-                this.yPosition + this.image.getHeight()
+                this.xPosition + 25,
+                this.yPosition + 15,
+                this.xPosition + this.image.getWidth() - 25,
+                this.yPosition + this.image.getHeight() - 50
         );
 
     }
@@ -66,10 +66,10 @@ public class Fish_Sprite {
     }
 
     public void updateHitbox() {
-        this.hitbox.left = this.xPosition;
-        this.hitbox.top = this.yPosition;
-        this.hitbox.right = this.xPosition + this.image.getWidth();
-        this.hitbox.bottom = this.yPosition + this.image.getHeight();
+        this.hitbox.left = this.xPosition + 22;
+        this.hitbox.top = this.yPosition + 15;
+        this.hitbox.right = this.xPosition + this.image.getWidth() - 22;
+        this.hitbox.bottom = this.yPosition + this.image.getHeight() - 50;
     }
     public int getxPosition()
     {
