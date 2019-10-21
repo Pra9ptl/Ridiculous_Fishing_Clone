@@ -73,6 +73,7 @@ public class GameLogic extends SurfaceView implements Runnable {
     boolean usertapped = false;
     double fishingstring = 10.0;
     double timetofish = 10.0;
+    int movingSpeed = 40;
     double stringleft = 0.0;
     boolean pindown = false;
     boolean pinup = false;
@@ -121,7 +122,7 @@ public class GameLogic extends SurfaceView implements Runnable {
                     oldTime = newTime;
                 }
 //                fishingstring += 10;
-                movingbg.setyPosition((movingbg.getyPosition() + 20));
+                movingbg.setyPosition((movingbg.getyPosition() + movingSpeed));
                 //Grabbing back the fishing string
             }
 
@@ -130,7 +131,7 @@ public class GameLogic extends SurfaceView implements Runnable {
             if ((fishingstring >= (stringleft))) {
                 Log.d("timetofish", "fishingstring:" + fishingstring + "stringleft: " + stringleft);
                 if ((outofwater.getyPosition() + 900) <= 900) {
-                    outofwater.setyPosition(outofwater.getyPosition() + 20);
+                    outofwater.setyPosition(outofwater.getyPosition() + movingSpeed);
                 }
             }
             if (fishingstring >= timetofish) {
@@ -160,10 +161,10 @@ public class GameLogic extends SurfaceView implements Runnable {
             }
 
             //moving the background
-            movingbg.setyPosition((movingbg.getyPosition() - 20));
+            movingbg.setyPosition((movingbg.getyPosition() - movingSpeed));
             //moving boatbackground up
             if ((outofwater.getyPosition() + 900) >= 0) {
-                outofwater.setyPosition(outofwater.getyPosition() - 20);
+                outofwater.setyPosition(outofwater.getyPosition() - movingSpeed);
                 Log.d("timetofish", "value of fishingstring" + (fishingstring) + "");
                 stringleft = fishingstring;
                 Log.d("stleft", "decrease this much: " + (stringleft) + "");
@@ -225,10 +226,10 @@ public class GameLogic extends SurfaceView implements Runnable {
 
         //Fish movement along Y axis
         if (targetMovingUp == true) {
-            fs.setyPosition(fs.getyPosition() - 20);
+            fs.setyPosition(fs.getyPosition() - movingSpeed);
         }
         if (targetMovingDown == true) {
-            fs.setyPosition(fs.getyPosition() + 20);
+            fs.setyPosition(fs.getyPosition() + movingSpeed);
         }
 
         // moving hitbox of all fishes
