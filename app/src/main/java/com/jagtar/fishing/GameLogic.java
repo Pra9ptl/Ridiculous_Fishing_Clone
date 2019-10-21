@@ -28,6 +28,7 @@ public class GameLogic extends SurfaceView implements Runnable {
 
     double MOUSETAP_X = 100;
     double MOUSETAP_Y = 700;
+    double SET_TIME_HERE = 5.0;
 
     GameBackground movingbg, bgonly, outofwater, pin, sky;
 
@@ -50,7 +51,7 @@ public class GameLogic extends SurfaceView implements Runnable {
         this.pin = new GameBackground(this.getContext(), ((screenWidth/2) - 70), 680, R.drawable.pin32);
         this.sky = new GameBackground(this.getContext(), 0, -screenHeight, R.drawable.back);
         initalPinXpos = this.pin.getxPosition();
-
+        huds.setFishString("" + Math.round(SET_TIME_HERE*10) + "/" + Math.round(SET_TIME_HERE*10));
         this.target_fishes = new ArrayList<Fish_Sprite>();
         this.catched_fishes = new ArrayList<Fish_Sprite>();
 
@@ -72,9 +73,10 @@ public class GameLogic extends SurfaceView implements Runnable {
     boolean drawbgDown = false;
     boolean drawbgUp = false;
     boolean usertapped = false;
-    double fishingstring = 5.0;
-    double timetofish = 5.0;
-    int movingSpeed = 40;
+    double fishingstring = SET_TIME_HERE;
+    double timetofish = SET_TIME_HERE;
+    double showStringLength = SET_TIME_HERE;
+    int movingSpeed = 20;
     double stringleft = 0.0;
     boolean pindown = false;
     boolean pinup = false;
@@ -137,7 +139,10 @@ public class GameLogic extends SurfaceView implements Runnable {
                 newTime = System.currentTimeMillis();
                 if((newTime - oldTime) >= 200.0)
                 {
+                    huds.setFishString("" + Math.round(showStringLength * 10.0) + "/" + Math.round(SET_TIME_HERE * 10) );
                     fishingstring += 0.2;
+                    showStringLength += 0.2;
+                    huds.setFishString("" + Math.round(showStringLength * 10.0) + "/" + Math.round(SET_TIME_HERE * 10) );
                     Log.d("fishingtime", + (fishingstring) *100.0 / 100.0 + "");
                     oldTime = newTime;
                 }
@@ -182,8 +187,10 @@ public class GameLogic extends SurfaceView implements Runnable {
             newTime = System.currentTimeMillis();
             if((newTime - oldTime) >= 200.0)
             {
+                huds.setFishString("" + Math.round(showStringLength * 10.0) + "/" + Math.round(SET_TIME_HERE * 10) );
                 fishingstring -= 0.2;
-                Log.d("fishingtime", + (fishingstring) *100.0 / 100.0 + "");
+                showStringLength -= 0.2;
+                huds.setFishString("" + Math.round(showStringLength * 10.0) + "/" + Math.round(SET_TIME_HERE * 10) );
                 oldTime = newTime;
             }
 
@@ -279,6 +286,7 @@ public class GameLogic extends SurfaceView implements Runnable {
                 targetMovingDown = true;
                 targetMovingUp = false;
                 drawbgDown = true;
+                showStringLength = fishingstring - 0.2;
                 fishingstring = 0.0;
                 outofwater.setyPosition(-900);
 //                time = (int) System.currentTimeMillis();
@@ -417,7 +425,7 @@ public class GameLogic extends SurfaceView implements Runnable {
             //Alignment
             p.setTextAlign(Paint.Align.LEFT);
             // Displaying Lives Status
-            this.canvas.drawText(("Total: " + huds.getNum_of_fisshes()), hudBg.right - 500, hudBg.bottom-50, p);
+            this.canvas.drawText(("String: " + huds.getFishString()), hudBg.right - 600, hudBg.bottom-50, p);
 
 
             //drawing pin
@@ -469,8 +477,9 @@ public class GameLogic extends SurfaceView implements Runnable {
             //moving bg on tap
             if (usertapped == false) {
                 bgMovingUp = true;
-                fishingstring = 5.0;
-                timetofish = 5.0;
+                fishingstring = SET_TIME_HERE;
+                timetofish = SET_TIME_HERE;
+                showStringLength = SET_TIME_HERE;
                 pindown = false;
                 stringleft = 0.0;
                 pinup = false;

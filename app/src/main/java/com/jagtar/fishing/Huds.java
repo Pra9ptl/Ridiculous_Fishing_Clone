@@ -4,11 +4,21 @@ public class Huds {
     private String start;
     private int Score;
     private int num_of_fisshes;
+    private String fishString;
 
     public Huds() {
          start = "Tap to start!";
          Score = 0;
          num_of_fisshes = 0;
+         fishString = "50/50";
+    }
+
+    public void setFishString(String fishString) {
+        this.fishString = fishString;
+    }
+
+    public String getFishString() {
+        return fishString;
     }
 
     public String getStart() {
