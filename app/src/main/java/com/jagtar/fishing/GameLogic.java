@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -81,6 +82,7 @@ public class GameLogic extends SurfaceView implements Runnable {
     int total_Target_Count = 0;
     boolean itsTime = false;
     Rect target_hitbox;
+    Huds huds = new Huds();
 
     public void steps() {
 
@@ -334,6 +336,52 @@ public class GameLogic extends SurfaceView implements Runnable {
                 }
                 previousTime = currentTime;
             }
+
+            //Starting instruction for the game
+            if(movingbg.getyPosition() == 0){
+                String todis = "Tap to start!";
+                p.setStyle(Paint.Style.FILL_AND_STROKE);
+                p.setTextAlign(Paint.Align.CENTER);
+                p.setColor(Color.BLUE);
+                p.setTextSize(200);
+                canvas.drawText(todis, (screenWidth/2),(screenHeight - 500), p);
+            }
+
+
+            //HUDS Plate
+            p.setStyle(Paint.Style.FILL);
+            // argb == alpha, red, green, blue where alpha is used for transparency
+            p.setColor(Color.argb(200,86, 101, 115));
+
+            // RectF is a function to draw rounded rectangle
+            RectF hudBg = new RectF(
+                    10,
+                    20,
+                    this.screenWidth - 10,
+                    200
+            );
+            this.canvas.drawRoundRect(hudBg, 30, 30, p);
+
+            // Text style
+            p.setStyle(Paint.Style.FILL_AND_STROKE);
+            // Text Color
+            p.setColor(Color.BLACK);
+            // Text Size
+            p.setTextSize(100);
+            // Text transparency
+            p.setAlpha(200);
+            //Alignment
+            p.setTextAlign(Paint.Align.LEFT);
+            // Displaying Lives Status
+            this.canvas.drawText(("Score: " + huds.getScore()), hudBg.left+20, hudBg.bottom-50, p);
+            // Calculating Score Text x position
+            int scoreX = (int) (hudBg.left + ((hudBg.right - hudBg.left) / 2));
+            //Alignment
+            p.setTextAlign(Paint.Align.LEFT);
+            // Displaying Lives Status
+            this.canvas.drawText(("Total: " + huds.getNum_of_fisshes()), hudBg.right - 500, hudBg.bottom-50, p);
+
+
             //drawing pin
             canvas.drawBitmap(pin.getImage(), pin.getxPosition(), pin.getyPosition(), null);
 //            Rect r = new Rect(pin.getxPosition(), pin.getyPosition(), pin.getxPosition() + pin.getImageWidth(), pin.getyPosition() + pin.getImageHeight());
