@@ -10,6 +10,7 @@ public class Fish_Sprite {
     private int yPosition;
     Bitmap image;
     Rect hitbox;
+    String i_name;
 
     double xn = 0;
     double yn = 0;
@@ -25,7 +26,7 @@ public class Fish_Sprite {
         this.moving_left = moving_left;
     }
 
-    public Fish_Sprite(Context context, int x, int y, int imageName) {
+    public Fish_Sprite(Context context, int x, int y, int imageName, String name) {
         this.xPosition = x;
         this.yPosition = y;
 
@@ -37,6 +38,8 @@ public class Fish_Sprite {
                 this.xPosition + this.image.getWidth() - 25,
                 this.yPosition + this.image.getHeight() - 50
         );
+
+        i_name = name;
 
     }
     public double getXn() {
@@ -97,5 +100,13 @@ public class Fish_Sprite {
 
     public void setImage(Bitmap image) {
         this.image = image;
+    }
+
+    public String getI_name() {
+        return i_name;
+    }
+
+    public void setI_name(String i_name) {
+        this.i_name = i_name;
     }
 }

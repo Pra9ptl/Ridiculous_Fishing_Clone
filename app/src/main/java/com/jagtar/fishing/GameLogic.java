@@ -148,21 +148,25 @@ public class GameLogic extends SurfaceView implements Runnable {
 
 
 
-            int curtime = (int) System.currentTimeMillis();
-            if(((curtime - shootingTime) >= 5000) /*&& ((curtime - shootingTime) <= 5100)*/){
-                if(completeset){
+        int curtime = (int) System.currentTimeMillis();
+
+        if (((curtime - shootingTime) >= 5000) && ((curtime - shootingTime) <= 5050)) {
+            if (completeset) {
                 Log.d("Jarvis", "Hello " + (curtime - shootingTime));
                 this.sky = new GameBackground(this.getContext(), 0, -screenHeight, R.drawable.back);
                 this.outofwater = new GameBackground(this.getContext(), 0, 0, R.drawable.boatbackground);
-                this.pin = new GameBackground(this.getContext(), ((screenWidth/2) - 70), 680, R.drawable.pin32);
+                this.pin = new GameBackground(this.getContext(), ((screenWidth / 2) - 70), 680, R.drawable.pin32);
                 target_fishes.clear();
                 catched_fishes.clear();
                 total_Target_Count = 0;
-               // shootingTime = curtime;
+                // shootingTime = curtime;
                 completeset = false;
                 hasReachedup = false;
+                usertapped = false;
             }
         }
+
+
 
         Log.d("fishing", fishingstring + "");
         //background moving down
@@ -200,7 +204,7 @@ public class GameLogic extends SurfaceView implements Runnable {
                 targetMovingDown = false;
                 targetMovingUp = false;
                 pinup = true;
-                usertapped = false;
+//                usertapped = false;
                 this.pin.setxPosition(initalPinXpos);
                 hasReachedup = true;
             }
@@ -388,15 +392,15 @@ public class GameLogic extends SurfaceView implements Runnable {
                         int sprite_Index = r.nextInt(3);
 
                         if (sprite_Index == 0) {
-                            target = new Fish_Sprite(this.getContext(), rx, ry, R.drawable.fish);
+                            target = new Fish_Sprite(this.getContext(), rx, ry, R.drawable.fish, "Fish");
                         }
 
                         if (sprite_Index == 1) {
-                            target = new Fish_Sprite(this.getContext(), rx, ry, R.drawable.octopus);
+                            target = new Fish_Sprite(this.getContext(), rx, ry, R.drawable.octopus, "Octopus");
                         }
 
                         if (sprite_Index == 2) {
-                            target = new Fish_Sprite(this.getContext(), rx, ry, R.drawable.seahorse);
+                            target = new Fish_Sprite(this.getContext(), rx, ry, R.drawable.seahorse, "Sea Horse");
                         }
                         if (target != null) {
 
@@ -414,14 +418,40 @@ public class GameLogic extends SurfaceView implements Runnable {
 
             //Starting instruction for the game
             if(usertapped == false){
-                String todis = "Tap to start!";
+                String todis = "TAP TO START!";
                 p.setStyle(Paint.Style.FILL_AND_STROKE);
                 p.setTextAlign(Paint.Align.CENTER);
-                p.setColor(Color.BLUE);
-                p.setTextSize(200);
+                p.setFakeBoldText(true);
+                p.setColor(Color.BLACK);
+                p.setTextSize(80);
                 canvas.drawText(todis, (screenWidth/2),(screenHeight - 500), p);
             }
 
+
+            if(usertapped){
+
+
+                for(int i = 0; i < catched_fishes.size(); i++){
+                    if((MOUSETAP_X >= catched_fishes.get(i).getxPosition()) &&
+                    (MOUSETAP_X <= (catched_fishes.get(i).getxPosition() + catched_fishes.get(i).getImage().getWidth())) &&
+                    (MOUSETAP_Y >= catched_fishes.get(i).getyPosition()) &&
+                    (MOUSETAP_Y <= (catched_fishes.get(i).getyPosition() + catched_fishes.get(i).getImage().getHeight()))
+                    ){
+                        Log.d("Hit", "Hit hard");
+                        if(catched_fishes.get(i).getI_name() == "Fish") {
+                            System.out.println("Score Update");
+                            huds.setScore(huds.getScore() + 5);
+                        } else if(catched_fishes.get(i).getI_name() == "Octopus") {
+                            System.out.println("Score Update");
+                            huds.setScore(huds.getScore() + 15);
+                        } else if(catched_fishes.get(i).getI_name() == "Sea Horse") {
+                            huds.setScore(huds.getScore() + 20);
+                            System.out.println("Score Update");
+                        }
+                        catched_fishes.remove(i);
+                    }
+                }
+            }
 
             //HUDS Plate
             p.setStyle(Paint.Style.FILL);
