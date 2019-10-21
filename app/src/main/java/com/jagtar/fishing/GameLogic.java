@@ -83,9 +83,11 @@ public class GameLogic extends SurfaceView implements Runnable {
     int ccc = 0;
     int total_Target_Count = 0;
     boolean itsTime = false;
-    Rect target_hitbox;
+    boolean completedown = false;
     Huds huds = new Huds();
+    boolean completeset = false;
     boolean hasReachedup = false;
+
 
     public void steps() {
 
@@ -120,14 +122,25 @@ public class GameLogic extends SurfaceView implements Runnable {
                 pinup = false;
                 if(pin.getyPosition() != (getHeight() - 250)){
                     pin.setyPosition(pin.getyPosition() + movingSpeed);
-
-                    Log.d("Jarvis", " Y == " + pin.getyPosition());
-                    Log.d("Jarvis", " Height == " + screenHeight);
                     pin.updateHitbox();
+                    completedown = true;
                 }
+            }
+        }
+
+        if(completedown && completeset == false){
+            int x;
+            int y;
+            for(int i = 0; i < catched_fishes.size(); i++){
+                x= rX_Pos_Gen();
+                y= rY_Pos_Gen();
+                catched_fishes.get(i).setxPosition(x);
+                catched_fishes.get(i).setyPosition(y);
+                catched_fishes.get(i).updateHitbox();
 
             }
 
+            completeset = true;
         }
 
         Log.d("fishing", fishingstring + "");
@@ -166,10 +179,6 @@ public class GameLogic extends SurfaceView implements Runnable {
                 usertapped = false;
                 this.pin.setxPosition(initalPinXpos);
                 hasReachedup = true;
-
-
-
-
             }
             /****************************************************************/
             if (movingbg.getyPosition() > screenHeight) {
@@ -225,10 +234,12 @@ public class GameLogic extends SurfaceView implements Runnable {
         /*********END FISHING PIN MOVEMENT********/
 
         /**************CATCHED FISH MOVEMENT*************/
-        for (int i = 0; i < catched_fishes.size(); i++) {
-            catched_fishes.get(i).setxPosition(pin.getxPosition());
-            catched_fishes.get(i).setyPosition(pin.getyPosition() + 80);
-            catched_fishes.get(i).updateHitbox();
+        if(completedown == false) {
+            for (int i = 0; i < catched_fishes.size(); i++) {
+                catched_fishes.get(i).setxPosition(pin.getxPosition());
+                catched_fishes.get(i).setyPosition(pin.getyPosition() + 80);
+                catched_fishes.get(i).updateHitbox();
+            }
         }
         /**************END CATCHED FISH MOVEMENT*************/
 
@@ -449,6 +460,12 @@ public class GameLogic extends SurfaceView implements Runnable {
         return pos;
     }
 
+    public int rY_Pos_Gen() {
+        Random r_num = new Random();
+        int pos = r_num.nextInt(getHeight() / 2);
+        return pos;
+    }
+
     public void controlFPS() {
         try {
             gameThread.sleep(17);
@@ -477,6 +494,16 @@ public class GameLogic extends SurfaceView implements Runnable {
                 targetMovingUp = true;
                 drawbgUp = true;
                 usertapped = true;
+                completedown = false;
+                huds = new Huds();
+                hasReachedup = false;
+                target_fishes.clear();
+                catched_fishes.clear();
+                total_Target_Count = 0;
+                completeset = false;
+                this.sky = new GameBackground(this.getContext(), 0, -screenHeight, R.drawable.back);
+                this.outofwater = new GameBackground(this.getContext(), 0, 0, R.drawable.boatbackground);
+                this.pin = new GameBackground(this.getContext(), ((screenWidth/2) - 70), 680, R.drawable.pin32);
                 //moving pin
                 pindown = true;
                 Log.d("screensize", screenWidth + "");
