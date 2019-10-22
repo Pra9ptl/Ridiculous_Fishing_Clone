@@ -147,9 +147,7 @@ public class GameLogic extends SurfaceView implements Runnable {
 			shootingTime = (int) System.currentTimeMillis();
 		}
 
-
 		int curtime = (int) System.currentTimeMillis();
-
 		if (((curtime - shootingTime) >= 5000) && ((curtime - shootingTime) <= 5050)) {
 			if (completeset) {
 				Log.d("Jarvis", "Hello " + (curtime - shootingTime));
