@@ -32,7 +32,7 @@ public class Sounds {
 
 
     public void getHookCollision() {
-        soundPool.play(hookCollision,2.0f,2.0f,1,0,1.0f);
+        soundPool.play(hookCollision,1.0f,1.0f,1,0,1.0f);
     }
 
     public void getShoot() {
