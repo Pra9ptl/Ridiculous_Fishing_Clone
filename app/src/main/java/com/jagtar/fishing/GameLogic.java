@@ -31,6 +31,7 @@ public class GameLogic extends SurfaceView implements Runnable {
 	double SET_TIME_HERE = 10.0;
 
 	GameBackground movingbg, bgonly, outofwater, pin, sky;
+	Sounds sound;
 
 	//list of targets in game
 	List<Fish_Sprite> target_fishes;
@@ -44,7 +45,7 @@ public class GameLogic extends SurfaceView implements Runnable {
 
 		this.screenWidth = screenW;
 		this.screenHeight = screenH;
-
+		sound = new Sounds(getContext());
 		this.movingbg = new GameBackground(this.getContext(), 0, 0, R.drawable.gamebackgroundlight);
 		this.bgonly = new GameBackground(this.getContext(), 0, 0, R.drawable.bgonly);
 		this.outofwater = new GameBackground(this.getContext(), 0, 0, R.drawable.boatbackground);
@@ -54,7 +55,7 @@ public class GameLogic extends SurfaceView implements Runnable {
 		huds.setFishString("" + Math.round(SET_TIME_HERE * 10));
 		this.target_fishes = new ArrayList<Fish_Sprite>();
 		this.catched_fishes = new ArrayList<Fish_Sprite>();
-
+		sound.getbgMusic();
 	}
 
 	@Override
@@ -306,6 +307,7 @@ public class GameLogic extends SurfaceView implements Runnable {
 	  removing fish from target and adding to catched*/
 	public void chatchTheFish(Fish_Sprite whichfish) {
 		if (pin.getHitbox().intersect(whichfish.getHitbox())) {
+			sound.getHookCollision();
 			if (bgMovingUp) // if colliding with fish while going down
 			{
 				//manipulating the time to fish and stringleft accordingly
@@ -447,6 +449,7 @@ public class GameLogic extends SurfaceView implements Runnable {
 							(MOUSETAP_Y >= catched_fishes.get(i).getyPosition()) &&
 							(MOUSETAP_Y <= (catched_fishes.get(i).getyPosition() + catched_fishes.get(i).getImage().getHeight()))
 					) {
+						sound.getShoot();
 						Log.d("Hit", "Hit hard");
 						//Normal Fish == 5pts increased
 						if (catched_fishes.get(i).getI_name() == "Fish") {
@@ -576,6 +579,7 @@ public class GameLogic extends SurfaceView implements Runnable {
 
 			//moving bg on tap
 			if (usertapped == false) {
+				sound.getHookStart();
 				bgMovingUp = true;
 				fishingstring = SET_TIME_HERE;
 				timetofish = SET_TIME_HERE;
