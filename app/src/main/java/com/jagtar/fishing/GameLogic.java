@@ -139,10 +139,10 @@ public class GameLogic extends SurfaceView implements Runnable {
 		// displaying catched fishes at random location to shoot
 		if (completedown && completeset == false) {
 			int x;
-			int y;
+			int y = 175;
 			for (int i = 0; i < catched_fishes.size(); i++) {
 				x = rX_Pos_Gen();
-				y = rY_Pos_Gen();
+				y = y + (6*(i+1));
 				catched_fishes.get(i).setxPosition(x);
 				catched_fishes.get(i).setyPosition(y);
 				catched_fishes.get(i).updateHitbox();
@@ -606,8 +606,10 @@ public class GameLogic extends SurfaceView implements Runnable {
 
 		} else if (userAction == MotionEvent.ACTION_MOVE) {
 			int tapX = (int) event.getX();
-			pin.setxPosition(tapX);
-			pin.updateHitbox();
+			if(tapX <= (getWidth() - pin.getImage().getWidth())) {
+				pin.setxPosition(tapX);
+				pin.updateHitbox();
+			}
 		}
 		return true;
 	}
