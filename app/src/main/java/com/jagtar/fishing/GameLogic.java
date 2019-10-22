@@ -76,7 +76,7 @@ public class GameLogic extends SurfaceView implements Runnable {
 	double fishingstring = SET_TIME_HERE;
 	double timetofish = SET_TIME_HERE;
 	double showStringLength = SET_TIME_HERE;
-	int movingSpeed = 20;
+	int movingSpeed = 25;
 	double stringleft = 0.0;
 	boolean pindown = false;
 	boolean pinup = false;
@@ -124,11 +124,14 @@ public class GameLogic extends SurfaceView implements Runnable {
 				sky.setyPosition(sky.getyPosition() + movingSpeed + 20);
 				pindown = false;
 				pinup = false;
-				if (pin.getyPosition() != (getHeight() - 250)) {
-					pin.setyPosition(pin.getyPosition() + movingSpeed);
-					pin.updateHitbox();
-					completedown = true;
-				}
+				pin.setyPosition(outofwater.getyPosition() + 700);
+				pin.updateHitbox();
+				completedown = true;
+//				if (pin.getyPosition() != (getHeight() - 250)) {
+//					pin.setyPosition(pin.getyPosition() + movingSpeed);
+//					pin.updateHitbox();
+//
+//				}
 			}
 		}
 
@@ -148,7 +151,7 @@ public class GameLogic extends SurfaceView implements Runnable {
 		}
 
 		int curtime = (int) System.currentTimeMillis();
-		if (((curtime - shootingTime) >= 5000) && ((curtime - shootingTime) <= 5050)) {
+		if (((curtime - shootingTime) >= 7000) && ((curtime - shootingTime) <= 7050)) {
 			if (completeset) {
 				Log.d("Jarvis", "Hello " + (curtime - shootingTime));
 				this.sky = new GameBackground(this.getContext(), 0, -screenHeight, R.drawable.back);
@@ -363,7 +366,7 @@ public class GameLogic extends SurfaceView implements Runnable {
 			}
 
 			//Sky Area
-			Rect skyup = new Rect(0, sky.getyPosition(), screenWidth, sky.getyPosition() + screenHeight);
+			Rect skyup = new Rect(0, sky.getyPosition() - 1500, screenWidth, outofwater.getyPosition() + 10);
 			canvas.drawBitmap(sky.getImage(), null, skyup, null);
 
 			//boat background

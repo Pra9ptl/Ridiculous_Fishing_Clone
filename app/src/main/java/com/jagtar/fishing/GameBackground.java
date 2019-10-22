@@ -24,9 +24,9 @@ public class GameBackground {
             this.bgimage = BitmapFactory.decodeResource(context.getResources(), imageName);
 
             this.hitbox = new Rect(
-                    this.xPosition + 30,
-                    this.yPosition + 60,
-                    this.xPosition + this.bgimage.getWidth() - 35,
+                    this.xPosition,
+                    this.yPosition + 50,
+                    this.xPosition + this.bgimage.getWidth(),
                     this.yPosition + this.bgimage.getHeight() - 10
             );
         }
@@ -77,9 +77,9 @@ public class GameBackground {
         }
 
         public void updateHitbox() {
-            this.hitbox.left = this.xPosition + 35;
-            this.hitbox.top = this.yPosition + 60;
-            this.hitbox.right = this.xPosition + this.bgimage.getWidth() - 35;
+            this.hitbox.left = this.xPosition;
+            this.hitbox.top = this.yPosition + 50;
+            this.hitbox.right = this.xPosition + this.bgimage.getWidth();
             this.hitbox.bottom = this.yPosition + this.bgimage.getHeight() - 10;
         }
         public int getxPosition()
